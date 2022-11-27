@@ -1,13 +1,19 @@
 from django.db import models
+from common.models import CommonModel
 
 # Create your models here.
 
 
-class Room(models.Model):
+class Room(CommonModel):
     class RoomKindChoices(models.TextChoices):
         ENTIRE_PLACE = ("entire_place", "Entire Place")
         PRIVATE_ROOM = ("private_room", "Privateroom")
         SHARED_ROOM = ("shared_room", "Shared Room")
+
+    name = models.CharField(
+        max_length=180,
+        default="",
+    )
 
     country = models.CharField(
         max_length=50,
@@ -38,16 +44,21 @@ class Room(models.Model):
         choices=RoomKindChoices.choices,
     )
 
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+    )
     description = models.TextField()
 
-    amenities = models.ManyToManyField("rooms.Amenity")
+    amenities = models.ManyToManyField(
+        "rooms.Amenity",
+    )
 
-    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self) -> str:
+        return self.name
 
-    updated = models.DateTimeField(auto_created=True)
 
-
-class Amenity(models.Model):
+class Amenity(CommonModel):
 
     """Amenity Definition"""
 
@@ -58,4 +69,11 @@ class Amenity(models.Model):
     description = models.CharField(
         max_length=150,
         null=True,
+        blank=True,
     )
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Amenities"
