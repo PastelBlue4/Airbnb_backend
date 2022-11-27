@@ -40,6 +40,12 @@ class Room(models.Model):
 
     description = models.TextField()
 
+    amenities = models.ManyToManyField("rooms.Amenity")
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    updated = models.DateTimeField(auto_created=True)
+
 
 class Amenity(models.Model):
 
